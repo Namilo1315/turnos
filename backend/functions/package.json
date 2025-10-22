@@ -1,0 +1,9 @@
+{
+  "name": "turnero-functions",
+  "engines": { "node": "18" },
+  "dependencies": {
+    "firebase-admin": "^11.11.1",
+    "firebase-functions": "^4.6.0",
+    "node-fetch": "^2.7.0"
+  }
+}
