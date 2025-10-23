@@ -3,15 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cancelar turno — Estética</title>
+<title>Cancelar turno — Estética Bellezza</title>
+<meta name="theme-color" content="#ec4899">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="assets/style.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body{font-family:"Inter",system-ui,-apple-system,Segoe UI,Roboto}
+  .navbar{background:rgba(255,255,255,.9); border-bottom:1px solid #ffe4e6; backdrop-filter:blur(8px)}
+  .card{border:1px solid #ffe4e6; box-shadow:0 12px 26px rgba(236,72,153,.08); border-radius:1rem}
+</style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg">
   <div class="container py-2">
-    <a class="navbar-brand" href="index.html">Estética Bellezza</a>
+    <a class="navbar-brand fw-bold" href="index.html">Estética Bellezza</a>
   </div>
 </nav>
 
@@ -20,9 +26,11 @@
     <div class="col-lg-7">
       <div class="card p-4">
         <h3 class="fw-bold">Cancelar mi turno</h3>
-        <p class="text-muted">Usá el enlace que te enviamos por WhatsApp para cancelar tu turno.</p>
-        <div id="status"></div>
+        <p class="text-muted mb-3">Usá el enlace que te enviamos por WhatsApp para cancelar tu turno.</p>
+
+        <div id="status" role="status" aria-live="polite"></div>
         <div id="details" class="mt-3"></div>
+
         <div class="mt-3 d-none" id="after">
           <a href="index.html" class="btn btn-primary">Volver a reservar</a>
         </div>
@@ -31,7 +39,25 @@
   </div>
 </main>
 
-<script src="js/db.js"></script>
-<script src="js/cancel.js"></script>
+<!-- ===== Firebase: inicialización como módulo (reutiliza si ya existe) ===== -->
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBTOlML4dMiryC6x7s7HAWvhkrT_j-U4D4",
+    authDomain: "turnero-432d4.firebaseapp.com",
+    projectId: "turnero-432d4",
+    storageBucket: "turnero-432d4.firebasestorage.app",
+    messagingSenderId: "259318366599",
+    appId: "1:259318366599:web:1e56a25b022942b1095322"
+  };
+
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+  window.__FIREBASE_APP__ = app; // lo exponemos para otros módulos si lo necesitan
+</script>
+
+<script type="module" src="js/db.js"></script>
+<script defer src="js/cancel.js"></script>
+
 </body>
 </html>

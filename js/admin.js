@@ -1,4 +1,4 @@
-// ===== ADMIN (Panel) =====
+// ===== ADMIN (Panel) — compatible con Firestore (DB.*) =====
 
 /* Helpers */
 const $ = s => document.querySelector(s);
@@ -157,7 +157,9 @@ function renderAgenda(){
     const stateBadge = b.status==='cancelado'
       ? '<span class="badge bg-light text-danger">Cancelado</span>'
       : '<span class="badge bg-light text-success">Confirmado</span>';
-    const tel = b.phone ? `https://wa.me/54${String(b.phone).replace(/\D/g,'')}` : '#';
+    const raw = String(b.phone||'').replace(/\D/g,'');
+    const waNum = raw.startsWith('54') ? raw : ('54' + raw); // evita 54 duplicado
+    const tel = raw ? `https://wa.me/${waNum}` : '#';
     return `<tr data-id="${b.id}">
       <td>${fmtFullDate(b.date)}</td>
       <td>${b.time}</td>
@@ -279,10 +281,8 @@ c_save.addEventListener('click', async ()=>{
 
 /* ========= Servicios — SAFE OPS ========= */
 async function addServiceSafe(svc){
-  // intentamos APIs comunes primero
   if(typeof DB.addService === 'function') return await DB.addService(svc);
   if(typeof DB.createService === 'function') return await DB.createService(svc);
-  // fallback por array completo
   if(typeof DB.listServices === 'function' && typeof DB.saveServices === 'function'){
     const all = await DB.listServices();
     all.push(svc);
@@ -648,7 +648,7 @@ pinInp?.addEventListener('keydown', e=>{ if(e.key==='Enter') inBtn.click(); });
 // Logout
 logoutBtn?.addEventListener('click', ()=>{ setAuthed(false); showLogin(); });
 
-// Crear nuevo turno
+// Crear nuevo turno (con manejo de slot ocupado en Firestore)
 a_add?.addEventListener('click', async ()=>{
   const svc = SERVICES.find(s=>s.id===a_svc.value);
   const date=a_date.value, time=a_time.value, name=a_name.value.trim(), phone=(a_phone.value||'').replace(/\D/g,''), notes=a_notes.value.trim();
@@ -657,16 +657,21 @@ a_add?.addEventListener('click', async ()=>{
     return;
   }
   const booking = { id:'bk_'+Math.random().toString(36).slice(2,8), date, time, serviceId: svc.id, name, phone, notes, status:'confirmado', createdAt: Date.now(), cancelToken: Math.random().toString(36).slice(2,10), reminders:{h2:false} };
-  if(typeof DB.addBooking === 'function') await DB.addBooking(booking);
-  else if(typeof DB.createBooking === 'function') await DB.createBooking(booking);
-  else { // fallback
-    const all = await DB.listBookings();
-    all.push(booking);
-    await DB.saveBookings(all);
+  try{
+    if(typeof DB.addBooking === 'function') await DB.addBooking(booking);
+    else if(typeof DB.createBooking === 'function') await DB.createBooking(booking);
+    else { // fallback
+      const all = await DB.listBookings();
+      all.push(booking);
+      await DB.saveBookings(all);
+    }
+    a_name.value=''; a_phone.value=''; a_notes.value='';
+    await loadAllData();
+    renderKPIs(); renderAgenda(); renderCharts();
+  }catch(e){
+    const msg = (e && (e.code==='SLOT_TAKEN' || /SLOT_TAKEN/.test(e.message))) ? 'Ese horario ya está ocupado.' : (e.message || 'No se pudo crear el turno');
+    Swal.fire({icon:'error', title:'No se pudo crear el turno', text: msg, confirmButtonColor:'#ec4899'});
   }
-  a_name.value=''; a_phone.value=''; a_notes.value='';
-  await loadAllData();
-  renderKPIs(); renderAgenda(); renderCharts();
 });
 
 // Al cargar

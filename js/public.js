@@ -3,26 +3,12 @@ const $ = s => document.querySelector(s);
 const svcSel = $('#svc'), dateInp = $('#date'), durInp = $('#duration'), timesWrap = $('#times');
 const nameInp=$('#name'), phoneInp=$('#phone'), notesInp=$('#notes'), reserveBtn=$('#reserveBtn'), svcCards=$('#svcCards');
 
-function uid(p='id'){ return p + Math.random().toString(36).slice(2,10); }
 function todayISO(){ return new Date().toISOString().slice(0,10); }
 function fmtDate(d){ const [y,m,dd]=d.split('-'); return `${dd}/${m}/${y}`; }
 
-/* === Estilos para turnos tomados (borde rosado) === */
+/* ==== UI helpers mínimos ==== */
 (function injectUiStyles(){
   const css = `
-    .btn.booked{
-      border-color:#ec4899 !important;
-      color:#ec4899 !important;
-      box-shadow:0 0 0 .15rem rgba(236,72,153,.15);
-      cursor:not-allowed;
-      opacity:1 !important;
-      background:#fff;
-    }
-    .btn.booked:hover{ border-color:#db2777 !important; color:#db2777 !important; }
-    #times .btn.btn-primary{
-      background:#ec4899 !important; border-color:#ec4899 !important; color:#fff !important;
-      box-shadow:0 0 0 .2rem rgba(236,72,153,.25);
-    }
     .is-loading { position:relative; pointer-events:none; opacity:.9; }
     .is-loading::after{
       content:"";
@@ -52,23 +38,30 @@ const Toast = Swal.mixin({
   const services = await DB.listServices();
   const settings = await DB.getSettings();
 
-  // Combos + tarjetas servicio (mantengo IDs)
-  svcSel.innerHTML = services.map(s=>`<option value="${s.id}" data-duration="${s.duration}" data-color="${s.color}" data-price="${s.price}">${s.name} — $${s.price}</option>`).join('');
+  // === Combos ===
+  svcSel.innerHTML = services.map(s =>
+    `<option value="${s.id}" data-duration="${s.duration}" data-color="${s.color}" data-price="${s.price}">
+      ${s.name} — $${s.price}
+     </option>`).join('');
   durInp.value = (services[0]?.duration || 30) + ' min';
-  dateInp.value = todayISO();
+  if(!dateInp.value) dateInp.value = todayISO();
 
+  // === Tarjetas para el carrusel (como espera index.html: .svc-card) ===
+  // Usamos el color del servicio como "cover" de respaldo.
   svcCards.innerHTML = services.map(s => `
-    <div class="service-card">
-      <div class="head">
-        <div class="d-flex align-items-center"><span class="dot" style="background:${s.color}"></span><div class="title">${s.name}</div></div>
-        <div class="price">AR$ ${s.price}</div>
+    <article class="svc-card">
+      <div class="svc-cover" style="background:linear-gradient(135deg, ${s.color}33, #ffffff)"></div>
+      <div class="svc-body d-flex flex-column gap-1">
+        <div class="d-flex justify-content-between align-items-center">
+          <h6 class="svc-title mb-0">${s.name}</h6>
+          <span class="svc-price">AR$ ${s.price}</span>
+        </div>
+        <div class="svc-meta">Duración aprox. ${s.duration} minutos</div>
+        <button class="btn btn-sm btn-outline-primary mt-2" onclick="seleccionarServicio('${s.name}')">Reservar</button>
       </div>
-      <div class="meta">Duración aprox. ${s.duration} minutos</div>
-      <div class="mt-auto">
-        <button class="btn btn-accent w-100" onclick="document.getElementById('svc').value='${s.id}'; document.getElementById('svc').dispatchEvent(new Event('change')); window.scrollTo({top:0, behavior:'smooth'})">Elegir</button>
-      </div>
-    </div>
+    </article>
   `).join('');
+  // Dejamos que el script del index reconstruya el carrusel desde #svcCards
 
   svcSel.addEventListener('change', ()=>{
     const opt=svcSel.selectedOptions[0];
@@ -81,24 +74,22 @@ const Toast = Swal.mixin({
     const date = dateInp.value;
     const bookings = await DB.listBookings();
     const cfg = await DB.getSettings();
-    const slot = parseInt((cfg.slot || 30), 10);
+    const step = parseInt((cfg.slot || 30), 10);
     const open = (cfg.open || '09:00');
     const close = (cfg.close || '18:00');
-    const slots = genSlots(open, close, slot);
-    const occupied = new Set(bookings.filter(b => b.date===date && b.status!=='cancelado').map(b => b.time));
 
+    const slots = genSlots(open, close, step);
+    const occupiedTimes = new Set(
+      bookings.filter(b => b.date===date && b.status!=='cancelado').map(b => b.time)
+    );
+
+    // Render con la misma semántica / clases que tu index.html (.slot)
     timesWrap.innerHTML = slots.map(t=>{
-      const isOcc = occupied.has(t);
-      const cls = `btn btn-sm ${isOcc ? 'btn-outline booked' : 'btn-outline'}`;
-      const disabled = isOcc ? 'disabled' : '';
-      return `<button type="button" class="${cls}" ${disabled} data-time="${t}">${t}</button>`;
+      const isOcc = occupiedTimes.has(t);
+      const cls = `slot ${isOcc ? 'disabled' : ''}`;
+      return `<div class="${cls}" data-time="${t}">${t}</div>`;
     }).join('');
-
-    timesWrap.querySelectorAll('button').forEach(b => b.addEventListener('click', ()=>{
-      if(b.hasAttribute('disabled')) return;
-      timesWrap.querySelectorAll('button').forEach(x=>x.classList.remove('btn-primary'));
-      b.classList.add('btn-primary');
-    }));
+    // La selección visual la maneja el listener global del index ('.times .slot')
   }
 
   function genSlots(open, close, step){
@@ -111,18 +102,19 @@ const Toast = Swal.mixin({
     return out;
   }
 
-  refreshTimes();
+  await refreshTimes();
 
   reserveBtn.addEventListener('click', async ()=>{
     try{
       reserveBtn.classList.add('is-loading'); reserveBtn.setAttribute('disabled','');
 
-      const services = await DB.listServices();
-      const settings = await DB.getSettings();
-      const svc = services.find(s=>s.id===svcSel.value);
+      const allServices = await DB.listServices();
+      const cfg = await DB.getSettings();
+
+      const svc = allServices.find(s=>s.id===svcSel.value);
       const date = dateInp.value;
-      const chosenBtn = timesWrap.querySelector('.btn-primary');
-      const time = chosenBtn?.dataset.time;
+      const chosenEl = timesWrap.querySelector('.slot.active');
+      const time = chosenEl?.dataset.time;
       const name = nameInp.value.trim();
       const phone = (phoneInp.value||'').replace(/\D/g,'');
       const notes = notesInp.value.trim();
@@ -133,19 +125,27 @@ const Toast = Swal.mixin({
       }
 
       const cancelToken = Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,10);
-      const booking = { id: uid('bk_'), date, time, serviceId: svc.id, name, phone, notes, status:'confirmado', createdAt: Date.now(), cancelToken, reminders:{h2:false} };
-      await DB.addBooking(booking);
 
-      if(chosenBtn){
-        chosenBtn.classList.remove('btn-primary');
-        chosenBtn.classList.add('booked');
-        chosenBtn.setAttribute('disabled','');
-        chosenBtn.textContent = time;
+      // IMPORTANTE: usamos el id REAL que devuelve la DB
+      const saved = await DB.addBooking({
+        date, time, serviceId: svc.id, name, phone, notes,
+        status:'confirmado', createdAt: Date.now(), cancelToken, reminders:{h2:false}
+      });
+
+      if(chosenEl){
+        chosenEl.classList.remove('active');
+        chosenEl.classList.add('disabled');
+        chosenEl.textContent = time;
       }
 
-      const cancelUrl = location.origin + location.pathname.replace('index.html','cancel.html') + `?id=${booking.id}&token=${cancelToken}`;
-      const alias = settings.pay_alias || '';
-      const aliasBlock = alias ? `<div class="mt-2">Podés abonar por <strong>alias</strong>: <code>${alias}</code> <button class="btn btn-outline btn-sm copy-btn" onclick="navigator.clipboard.writeText('${alias}')">Copiar</button></div>` : '';
+      // URL robusta a cancel.html en el mismo sitio
+      const baseCancel = new URL('cancel.html', location.href).toString();
+      const cancelUrl = `${baseCancel}?id=${encodeURIComponent(saved.id)}&token=${encodeURIComponent(saved.cancelToken || cancelToken)}`;
+
+      const alias = cfg.pay_alias || '';
+      const aliasBlock = alias
+        ? `<div class="mt-2">Podés abonar por <strong>alias</strong>: <code>${alias}</code> <button class="btn btn-outline btn-sm" onclick="navigator.clipboard.writeText('${alias}')">Copiar</button></div>`
+        : '';
 
       await Swal.fire({
         icon:'success',
@@ -154,7 +154,7 @@ const Toast = Swal.mixin({
           <div class="text-start small">
             <div><strong>Servicio:</strong> ${svc.name}</div>
             <div><strong>Fecha:</strong> ${fmtDate(date)} ${time} hs</div>
-            <div><strong>Cancelación:</strong> <a class="link" href="${cancelUrl}" target="_blank">clic aquí</a></div>
+            <div><strong>Cancelación:</strong> <a class="link" href="${cancelUrl}" target="_blank" rel="noopener">clic aquí</a></div>
             ${aliasBlock}
           </div>
           <p class="small mt-2 text-muted mb-0">Te enviaremos recordatorio automático <strong>2 horas antes</strong>.</p>
@@ -163,8 +163,8 @@ const Toast = Swal.mixin({
         confirmButtonColor:'#ec4899'
       });
 
+      // Reset de campos mínimos
       nameInp.value=''; phoneInp.value=''; notesInp.value='';
-      timesWrap.querySelectorAll('button').forEach(x=>x.classList.remove('btn-primary'));
       await refreshTimes();
       Toast.fire({icon:'success', title:'Reserva guardada'});
     } catch(e){

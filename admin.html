@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Panel — Estética Bellezza</title>
 <meta name="theme-color" content="#ec4899">
+<link rel="icon" href="data:,"><!-- evita 404 de favicon -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.min.css" rel="stylesheet">
@@ -298,18 +299,47 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
 
-<!-- TU LÓGICA -->
-<script src="js/db.js"></script>
-<script src="js/admin.js"></script>
+<!-- ===== Firebase (MÓDULO) ===== -->
+<script type="module">
+  import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 
-<!-- Mejora UX mínima (opcional, no rompe IDs) -->
+  // Tu config
+  const firebaseConfig = {
+    apiKey: "AIzaSyBTOlML4dMiryC6x7s7HAWvhkrT_j-U4D4",
+    authDomain: "turnero-432d4.firebaseapp.com",
+    projectId: "turnero-432d4",
+    storageBucket: "turnero-432d4.firebasestorage.app",
+    messagingSenderId: "259318366599",
+    appId: "1:259318366599:web:1e56a25b022942b1095322"
+  };
+
+  // Evita doble inicialización si otro módulo ya lo hizo
+  const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+
+  // (Opcional) Exponer para scripts no-módulo (no debería hacer falta, pero ayuda a migrar)
+  window.__FIREBASE_APP__ = app;
+</script>
+
+
+
+
+<!-- UX mínima -->
 <script>
-  // Si querés un toque: foco automático en PIN al cargar
   document.addEventListener('DOMContentLoaded', ()=>{
     const pin = document.getElementById('pin');
     if(pin) pin.focus({preventScroll:true});
   });
 </script>
+<!-- LIBS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.12.4/dist/sweetalert2.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+
+<script type="module" src="js/db.js"></script>
+<script defer src="js/admin.js"></script>
+
 </body>
 </html>
+
 
