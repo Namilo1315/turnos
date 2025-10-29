@@ -3,61 +3,112 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Belén — Invitación de Casamiento</title>
+  <title>Belén & Pablo — Nuestra Boda</title>
+  <meta name="description" content="Invitación móvil, negro + dorado, portada estilo Belén con foto real, cuenta regresiva, menú hamburguesa, música, confirmar y regalos." />
 
-  <!-- Fuentes elegantes -->
+  <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Tangerine:wght@700&display=swap" rel="stylesheet">
-
-  <!-- Bootstrap 5 para el carrusel -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <!-- Iconos para botón Play/Pause -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <meta name="theme-color" content="#0a0a0a" />
 
   <style>
     :root{
-      --bg:#0f172a;        /* fondo general (azul noche) */
-      --paper:#ffffff;     /* superficies claras */
-      --ink:#0b1220;       /* texto principal */
-      --muted:#94a3b8;     /* texto secundario */
-      --rose:#f43f5e;      /* acento rosado */
-      --gold:#fbbf24;      /* acento dorado */
-      --line:#e5e7eb;      /* bordes */
+      --bg:#0a0a0a; --card:#0e0e0e; --ink:#f5f5f5; --muted:#b8b8b8;
+      --gold:#d4af37; --gold-2:#b89024; --line:#1b1b1b; --ring:0 18px 46px rgba(0,0,0,.6);
+      --w:min(100%,480px);
+      --topbar:58px;
     }
     *{box-sizing:border-box}
-    body{margin:0;background:var(--bg);color:#fff;font-family: Lato, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji"}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, #141414 0%, transparent 60%),
+        linear-gradient(180deg,#0a0a0a,#0a0a0a);
+      color:var(--ink);
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+    }
+    /* Motivo dorado */
+    body:before, body:after{
+      content:""; position:fixed; z-index:-1; width:340px; height:340px; opacity:.22; pointer-events:none;
+      background:url(https://static.vecteezy.com/system/resources/previews/001/343/598/non_2x/golden-flower-on-black-background-gold-leaf-free-vector.jpg) center/cover no-repeat;
+      filter:saturate(1.1) contrast(1.05); mix-blend-mode:screen;
+    }
+    body:before{top:-80px; right:-60px; transform:rotate(-8deg)}
+    body:after{bottom:-100px; left:-80px; transform:rotate(12deg)}
 
-    /* ====== HERO ====== */
-    .hero{
-      position:relative;min-height:72vh;display:grid;place-items:center;overflow:hidden;
-      background:#0b1220;
-    }
-    .hero::before{ /* imagen de fondo */
-      content:"";position:absolute;inset:0;z-index:0;
-      background:url("./img/belen-hero.jpg") center/cover no-repeat; /* ⇦ Cambiar por tu foto principal */
-      filter:contrast(1.05) saturate(1.05) brightness(.9);
-    }
-    .hero::after{ /* velo */
-      content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.35));
-    }
-    .hero-inner{position:relative;z-index:1;text-align:center;padding:32px 20px;max-width:960px}
-    .kicker{letter-spacing:.35em;text-transform:uppercase;font-weight:300;color:#e2e8f0;font-size:.8rem}
-    .names{font-family: 'Tangerine', cursive;font-size:84px;line-height:.95;margin:8px 0 6px}
-    .names .amp{color:var(--gold)}
-    .date{font-size:1.1rem;color:#e2e8f0}
+    a{color:var(--ink);text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{max-width:var(--w);margin:0 auto;padding:12px}
 
-    /* ====== BOTÓN AUDIO ====== */
+    /* Topbar & Menú */
+    .topbar{
+      position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:8px;
+      height:var(--topbar);
+      padding:10px 12px;background:rgba(10,10,10,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)
+    }
+    .brand{display:flex;align-items:center;gap:8px}
+    .brand .namescript{
+      font-family:"Great Vibes", cursive; font-weight:400; font-size:26px; line-height:1; letter-spacing:.02em;
+      background:linear-gradient(180deg,#fff7d1,var(--gold),#e7ae1f);
+      -webkit-background-clip:text;background-clip:text;color:transparent; text-shadow:0 1px 0 rgba(255,255,255,.18);
+    }
+    .hamb,.music{
+      width:42px;height:42px;display:grid;place-items:center;border-radius:12px;border:1px solid #2a2a2a;background:#111;cursor:pointer
+    }
+    .hamb span{width:18px;height:2px;background:#eee;position:relative;display:block}
+    .hamb span:before,.hamb span:after{content:"";position:absolute;left:0;width:18px;height:2px;background:#eee}
+    .hamb span:before{top:-6px}.hamb span:after{top:6px}
+    .music{font-size:18px;color:#fff}
+    .music[aria-pressed="true"]{border-color:#ffd577; box-shadow:0 0 0 2px rgba(212,175,55,.25) inset}
+
+    nav.drawer{position:fixed;inset:0;display:none;background:rgba(0,0,0,.72);z-index:45}
+    .panel{
+      position:absolute;right:0;top:0;height:100%;width:min(80%,300px);
+      background:#0f0f0f;border-left:1px solid var(--line); box-shadow:var(--ring);display:flex;flex-direction:column
+    }
+    .panel header{display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid var(--line)}
+    .panel h3{margin:0;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .panel a{padding:12px 14px;border-bottom:1px solid #151515;font-weight:600;color:var(--ink);font-size:15px}
+    .panel a:hover{background:#131313}
+
+    /* HERO */
+    header.hero{
+      position:relative;overflow:hidden;border-radius:22px;margin:12px auto;background:#0b1220;border:1px solid var(--line);box-shadow:var(--ring);
+      min-height:72vh; scroll-margin-top:calc(var(--topbar) + 12px);
+    }
+    .hero-media{position:relative;min-height:72vh;display:grid;place-items:center}
+    .hero-media .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.05) saturate(1.05) brightness(1.18)}
+    .veil{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.35))}
+    .hero-inner{position:relative;z-index:1;text-align:center;padding:32px 20px;max-width:960px;margin:auto; padding-top:22vh;}
+    .kicker{letter-spacing:.55em;text-transform:uppercase;font-weight:700;color:#e2e8f0;font-size:.95rem;opacity:.95; margin-top: 40px;}
+
+    /* Nombres dorados */
+    .names{
+      font-family:"Great Vibes", cursive; font-weight:400; font-size:clamp(52px,12vw,90px);
+      line-height:1.02; margin:26px 12px 10px;
+      background-image:
+        radial-gradient(120% 100% at 50% 15%, #ffe8a8 0%, rgba(255,232,168,0) 36%),
+        linear-gradient(180deg, #ffe8a8 0%, #f1c857 22%, #d4af37 50%, #b98927 72%, #f1c857 90%, #ffe8a8 100%);
+      -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent;
+      -webkit-text-stroke:.45px rgba(0,0,0,.35);
+      text-shadow:0 1px 0 rgba(0,0,0,.25), 0 0 10px rgba(212,175,55,.18);
+    }
+    .names .amp{background:none;-webkit-text-fill-color:#ffde77;color:#ffde77;-webkit-text-stroke:0;text-shadow:none}
+    .date{font-size:1.05rem;color:#e2e8f0}
+
+    /* Botón audio + visualizador */
     .audio-wrap{margin-top:18px;display:flex;justify-content:center;gap:10px;align-items:center}
     .audio-btn{
       appearance:none;border:0;outline:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
       width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter: blur(3px);
-      box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .15s ease, background .2s ease;
+      box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .15s ease, background .2s ease; color:#fff; font-size:26px; font-weight:800
     }
     .audio-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.18)}
-    .audio-btn i{font-size:24px;color:#fff}
-    .audio-label{font-weight:400;color:#f8fafc;opacity:.9}
-    .viz{display:inline-block;width:44px;height:18px;position:relative}
+    .audio-label{font-weight:600;color:#f8fafc;opacity:.95}
+    .viz{display:inline-block;width:44px;height:18px;position:relative;transition:opacity .25s ease}
     .bar{position:absolute;bottom:0;width:4px;background:#fff;left:0;height:20%;animation:vu 1s infinite ease-in-out}
     .bar:nth-child(2){left:8px;animation-delay:.1s}
     .bar:nth-child(3){left:16px;animation-delay:.2s}
@@ -65,200 +116,351 @@
     .bar:nth-child(5){left:32px;animation-delay:.4s}
     @keyframes vu{0%,100%{height:20%}50%{height:100%}}
 
-    /* ====== CONTADOR ====== */
-    .countdown{max-width:980px;margin:40px auto 10px;padding:0 16px}
-    .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-    .tile{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:18px 12px;text-align:center}
-    .num{font-size:40px;font-weight:700}
-    .lbl{font-size:.9rem;color:#d1d5db;letter-spacing:.08em;text-transform:uppercase}
-    @media (max-width:640px){.tiles{grid-template-columns:repeat(2,1fr)}}
+    /* Secciones */
+    section.block{
+      margin-top:14px;background:linear-gradient(180deg,#0e0e0e,#0c0c0c);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--ring);
+      scroll-margin-top:calc(var(--topbar) + 12px);
+    }
+    h2{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:22px;margin:2px 0 8px;color:var(--ink);letter-spacing:.02em;text-align:center}
+    .lead{margin:0 0 10px;color:var(--muted);text-align:center}
+    .muted{color:var(--muted);text-align:center}
 
-    /* ====== GALERÍA ESTILO BELÉN ====== */
-    .gallery{max-width:1100px;margin:38px auto;padding:0 16px}
-    .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}
-    .ph{position:relative;border-radius:16px;overflow:hidden;min-height:220px;background:#111}
-    .ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-    /* Disposición elegante */
-    .grid > .c1{grid-column:span 6}
-    .grid > .c2{grid-column:span 6}
-    .grid > .c3{grid-column:span 4}
-    .grid > .c4{grid-column:span 4}
-    .grid > .c5{grid-column:span 4}
-    @media (max-width:900px){.grid > *{grid-column:span 6}}
-    @media (max-width:600px){.grid > *{grid-column:span 12}}
+    /* Contador */
+    .count{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;justify-items:center}
+    .tile{display:grid;place-items:center;background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:12px;min-width:68px}
+    .num{font-size:28px;font-weight:800;letter-spacing:.04em;background:linear-gradient(180deg,#fff7d1,var(--gold),#ffe7a8); -webkit-background-clip:text; color:transparent}
+    .lbl{font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
 
-    .section-title{font-family:'Tangerine', cursive;font-size:56px;color:#fff;text-align:center;margin:14px 0 6px}
-    .section-sub{color:#cbd5e1;text-align:center;margin-bottom:18px}
+    /* Listas y botones */
+    .list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .row{display:grid;grid-template-columns:28px 1fr;align-items:center;gap:10px;padding:10px;border:1px solid #1d1d1d;border-radius:14px;background:#101010}
+    .row i{display:grid;place-items:center;font-style:normal;font-size:18px;opacity:.9}
+    .row div{line-height:1.35}
+    .row strong{font-weight:700}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:11px 16px;border-radius:14px;border:1px solid var(--gold-2);background:linear-gradient(180deg,#1a1a1a,#121212);color:var(--ink);font-weight:700;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.45); text-align:center}
+    .btn.primary{background:linear-gradient(180deg,var(--gold),#c79b2e);color:#111;border-color:#ffe7a8;text-shadow:0 1px 0 rgba(255,255,255,.2)}
 
-    /* ====== CARRUSEL BODA ====== */
-    .carousel .carousel-caption{background:rgba(0,0,0,.35);backdrop-filter:blur(3px);border-radius:12px;padding:10px 14px}
-    .carousel .carousel-item{max-height:70vh}
-    .carousel .carousel-item img{object-fit:cover;height:70vh}
+    footer{padding:28px 0 36px;color:var(--muted);text-align:center}
 
-    footer{max-width:980px;margin:30px auto 60px;text-align:center;color:#cbd5e1}
-    .brand{color:var(--gold)}
+    /* Reveal & Stagger */
+    .reveal{opacity:0;transform:translateY(14px)}
+    .reveal.show{opacity:1;transform:none;transition:opacity .65s ease, transform .65s ease}
+    .hero .kicker, .hero .names, .hero .date, .hero .audio-wrap{opacity:0; transform:translateY(10px)}
+    .hero.loaded .kicker{animation:fadeUp .6s ease .05s forwards}
+    .hero.loaded .names{animation:fadeUp .65s ease .2s forwards}
+    .hero.loaded .date{animation:fadeUp .65s ease .38s forwards}
+    .hero.loaded .audio-wrap{animation:fadeUp .7s ease .55s forwards}
+    @keyframes fadeUp{to{opacity:1; transform:none}}
+
+    @media (prefers-reduced-motion: reduce){
+      .reveal, .hero .kicker, .hero .names, .hero .date, .hero .audio-wrap{opacity:1 !important; transform:none !important; animation:none !important}
+      html{scroll-behavior:auto}
+    }
+
+    /* Typewriter */
+    .typewriter{
+      margin:22px auto 0; max-width:92%; text-align:center; line-height:1.7;
+      font-family:"Cormorant Garamond",serif; font-style:italic; font-size:clamp(16px,4.2vw,20px);
+      color:#f1f1f1; letter-spacing:.3px; position:relative;
+    }
+    .typewriter::before, .typewriter::after{
+      content:""; display:block; width:160px; height:1px; margin:10px auto;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:.9;
+    }
+    .typewriter span{
+      border-right:2px solid rgba(212,175,55,.7); padding-right:3px; animation:caret .9s steps(1) infinite; text-shadow:0 1px 0 rgba(0,0,0,.2);
+    }
+    @keyframes caret{50%{border-color:transparent}}
+
+    /* YouTube accesible (presente pero no visible) */
+    #yt-holder{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0; }
   </style>
 </head>
 <body>
-  <!-- ====== HERO con título y botón de audio ====== -->
-  <header class="hero">
-    <div class="hero-inner">
-      <div class="kicker">¡Estás invitado/a!</div>
-      <!-- ⇦ Cambia los nombres si querés: "Belén & Juan" -->
-      <h1 class="names">Belén <span class="amp">&amp;</span> <span class="other">Pablo</span></h1>
-      <!-- Fecha en texto (independiente del contador) -->
-      <div class="date">Sábado 7 de febrero · 21:00 hs · Mendoza</div>
-
-      <div class="audio-wrap">
-        <button class="audio-btn" id="audioBtn" aria-label="Reproducir música">
-          <i class="fa-solid fa-play" id="audioIcon"></i>
-        </button>
-        <span class="audio-label" id="audioLabel">Musicalizá la invitación — Play</span>
-        <span class="viz" id="viz" aria-hidden="true" style="opacity:.0">
-          <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
-        </span>
+  <div class="wrap">
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="brand"><span class="namescript">Belén & Pablo</span></div>
+      <div style="display:flex;gap:8px">
+        <button class="music" id="musicBtn" aria-label="Música" aria-pressed="false" title="Reproducir/Pausar música">▶</button>
+        <button class="hamb" id="openMenu" aria-label="Abrir menú"><span></span></button>
       </div>
     </div>
-  </header>
 
-  <!-- ====== CONTADOR REGRESIVO ====== -->
-  <section class="countdown" id="contador">
-    <h2 class="section-title">Cuenta regresiva</h2>
-    <p class="section-sub">Falta cada vez menos para celebrar nuestro amor</p>
-    <div class="tiles" role="group" aria-label="Contador regresivo al evento">
-      <div class="tile"><div class="num" id="d">0</div><div class="lbl">Días</div></div>
-      <div class="tile"><div class="num" id="h">0</div><div class="lbl">Horas</div></div>
-      <div class="tile"><div class="num" id="m">0</div><div class="lbl">Minutos</div></div>
-      <div class="tile"><div class="num" id="s">0</div><div class="lbl">Segundos</div></div>
-    </div>
-  </section>
-
-  <!-- ====== GALERÍA con el estilo que ya usamos para Belén ====== -->
-  <section class="gallery" id="galeria">
-    <h2 class="section-title">Nuestra historia</h2>
-    <p class="section-sub">Algunas fotos especiales (se adapta a celular)</p>
-    <div class="grid">
-      <!-- ⇦ Reemplazá las rutas por tus imágenes reales (mantené proporción horizontal/vertical variada) -->
-      <figure class="ph c1"><img src="./bel.jpeg" alt="Belén sonriendo" loading="lazy"></figure>
-      <figure class="ph c2"><img src="" alt="Pareja abrazada" loading="lazy"></figure>
-      <figure class="ph c3"><img src="./img/belen-3.jpg" alt="Detalle de manos con anillos" loading="lazy"></figure>
-      <figure class="ph c4"><img src="./img/belen-4.jpg" alt="Brindis" loading="lazy"></figure>
-      <figure class="ph c5"><img src="./img/belen-5.jpg" alt="Ramo de novia" loading="lazy"></figure>
-    </div>
-  </section>
-
-  <!-- ====== CARRUSEL de casamiento ====== -->
-  <section class="container mb-5" id="carrusel">
-    <h2 class="section-title">Momentos de nuestra boda</h2>
-    <p class="section-sub">Deslizá para ver el carrusel</p>
-
-    <div id="weddingCarousel" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-indicators">
-        <button type="button" data-bs-target="#weddingCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-        <button type="button" data-bs-target="#weddingCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        <button type="button" data-bs-target="#weddingCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    <!-- Drawer -->
+    <nav class="drawer" id="drawer" aria-hidden="true">
+      <div class="panel">
+        <header>
+          <h3>Menú</h3>
+          <button class="hamb" id="closeMenu" aria-label="Cerrar menú"><span></span></button>
+        </header>
+        <a href="#inicio" class="navlink">Inicio</a>
+        <a href="#confirmar" class="navlink">Confirmar</a>
+        <a href="#regalo" class="navlink">Regalo</a>
+        <a href="#tarjetas" class="navlink">Tarjetas</a>
+        <a href="#gracias" class="navlink">Gracias</a>
       </div>
-      <div class="carousel-inner rounded-4 overflow-hidden shadow">
-        <!-- ⇦ Reemplazá por tus fotos del casamiento -->
-        <div class="carousel-item active">
-          <img src="./img/wedding-1.jpg" class="d-block w-100" alt="Salida de los novios">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>¡Recién casados!</h5>
-            <p>La emoción del primer paso juntos.</p>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="./img/wedding-2.jpg" class="d-block w-100" alt="Primer baile">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Primer baile</h5>
-            <p>Un momento para recordar por siempre.</p>
-          </div>
-        </div>
-        <div class="carousel-item">
-          <img src="./img/wedding-3.jpg" class="d-block w-100" alt="Brindis con la familia">
-          <div class="carousel-caption d-none d-md-block">
-            <h5>Brindis</h5>
-            <p>Celebrando con quienes más queremos.</p>
+    </nav>
+
+    <!-- HERO -->
+    <header id="inicio" class="hero">
+      <div class="hero-media">
+        <img class="bg" src="belu.jpeg" onerror="this.onerror=null;this.src='belu.jpg'" alt="Belén y Pablo — foto de novios">
+        <div class="veil"></div>
+        <div class="hero-inner">
+          <div class="kicker">¡Estás invitado!</div>
+          <h1 class="names">Belén <span class="amp">&amp;</span> Pablo</h1>
+          <div class="date" id="fecha-hero">Sábado 14/03/2026 • 21:00 h • Mendoza</div>
+          <div class="audio-wrap">
+            <button class="audio-btn" id="audioBtn" aria-label="Reproducir música">▶</button>
+            <span class="audio-label" id="audioLabel">Musicalizá la invitación — Play</span>
+            <span class="viz" id="viz" aria-hidden="true" style="opacity:0">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </span>
           </div>
         </div>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#weddingCarousel" data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Anterior</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#weddingCarousel" data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Siguiente</span>
-      </button>
-    </div>
-  </section>
+    </header>
 
-  <footer>
-    <p>Con amor, <span class="brand">Belén</span> &amp; <span class="brand">[Nombre]</span>. ¡Te esperamos!</p>
-  </footer>
+    <!-- Cuenta regresiva -->
+    <section class="block reveal" style="animation-delay:.05s">
+      <h2>Cuenta regresiva</h2>
+      <p class="lead">Comienza la cuenta regresiva para nuestro gran día…</p>
+      <div class="date" id="fecha-legible" style="display:inline-block;margin:0 auto 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-weight:700"></div>
+      <div class="count" id="countdown" style="margin-top:8px">
+        <div class="tile"><div class="num" id="d">0</div><div class="lbl">días</div></div>
+        <div class="tile"><div class="num" id="h">0</div><div class="lbl">horas</div></div>
+        <div class="tile"><div class="num" id="m">0</div><div class="lbl">min</div></div>
+        <div class="tile"><div class="num" id="s">0</div><div class="lbl">seg</div></div>
+      </div>
+      <div class="typewriter"><span id="typeText"></span></div>
+    </section>
 
-  <!-- ====== AUDIO ====== -->
-  <!-- Usa la misma canción que compartiste (podés cambiar el src por otro MP3 si querés) -->
-  <audio id="song" preload="auto" src="https://static.wixstatic.com/mp3/81e114_37f9211a1bf348e7a371540ba2a14621.mp3"></audio>
+    <!-- Confirmar -->
+    <section id="confirmar" class="block reveal">
+      <h2>Confirmar asistencia</h2>
+      <ul class="list">
+        <li class="row"><i>📍</i><div><strong>Recepción</strong><br><span id="fiesta-lugar">Salón Torino Eventos</span> — <span id="fiesta-fecha">14/03/2026 · 21:00 h</span></div></li>
+        <li class="row"><i>⛪</i><div><strong>Ceremonia</strong><br><span id="ceremonia-lugar">Parroquia Nuestra Señora</span> — <span id="ceremonia-fecha">14/03/2026 · 19:00 h</span></div></li>
+        <li class="row"><i>👗</i><div><strong>Dress code</strong><br>Elegante (blanco total reservado para la novia)</div></li>
+      </ul>
+      <div class="actions" style="margin-top:10px">
+        <a class="btn primary" id="rsvp-wa" target="_blank">WhatsApp RSVP</a>
+        <a class="btn" id="rsvp-form" target="_blank">Formulario</a>
+      </div>
+      <p class="muted" style="margin-top:8px">Confirmar antes del <strong id="cierre-rsvp">28/02/2026</strong>.</p>
+    </section>
 
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Regalo -->
+    <section id="regalo" class="block reveal">
+      <h2>Regalo</h2>
+      <p class="muted">Tu presencia es nuestro mejor regalo. Si deseás hacernos un obsequio, podés hacerlo por transferencia.</p>
+      <div class="actions" style="gap:8px;flex-wrap:wrap">
+        <input id="alias" value="ALIAS.BODA.EJEMPLO" readonly style="width:260px;padding:10px 12px;border-radius:12px;border:1px solid #242424;background:#101010;color:var(--ink);text-align:center">
+        <button class="btn primary" id="copyAlias" type="button">Copiar alias</button>
+      </div>
+    </section>
+
+    <!-- Tarjetas -->
+    <section id="tarjetas" class="block reveal">
+      <h2>Tarjetas</h2>
+      <ul class="list">
+        <li class="row"><i>🧑</i><div><strong>Adultos</strong><br><span id="precio-adultos">$60.000</span></div></li>
+        <li class="row"><i>🧒</i><div><strong>Menores (hasta 10 años)</strong><br><span id="precio-menores">$30.000</span></div></li>
+      </ul>
+      <p class="muted" style="margin-top:8px">Para adquirirlas, comunicarse con la familia.</p>
+    </section>
+
+    <!-- Gracias -->
+    <section id="gracias" class="block reveal">
+      <h2> Muchas Gracias</h2>
+      <p style="margin:0 0 8px; text-align:center">Existen momentos en la vida que imaginamos, soñamos y esperamos; uno de esos momentos ha llegado.</p>
+      <p style="margin:0 0 8px; text-align:center">Nuestro camino empezó hace <strong>15 años</strong> y hoy queremos celebrarlo con ustedes, reafirmando nuestro amor.</p>
+      <p style="margin:0 0 0; text-align:center">Tenemos el placer de poder compartirlo con cada uno de ustedes. Gracias por acompañarnos. ♥</p>
+    </section>
+
+    <footer>
+      <div style="opacity:.8">Belén & Pablo — 2026</div>
+    </footer>
+  </div>
+
+  <!-- Fallback de audio local (opcional). Colocá a-thousand-years.mp3 en la misma carpeta -->
+  <audio id="song" preload="auto" loop crossorigin="anonymous" style="position:absolute;left:-9999px;width:1px;height:1px;">
+    <source src="./a-thousand-years.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Contenedor invisible para YouTube -->
+  <div id="yt-holder"><div id="yt-player"></div></div>
+
+  <!-- IFrame API de YouTube -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
   <script>
-    // ========= CONTADOR =========
-    // Cambiá la fecha acá (zona horaria Argentina -03:00)
-    const DATE_TARGET = new Date("2026-02-07T21:00:00-03:00");
-    const d = document.getElementById('d');
-    const h = document.getElementById('h');
-    const m = document.getElementById('m');
-    const s = document.getElementById('s');
+  // ===== CONFIG =====
+  const CONFIG = {
+    pareja: "Belén & Pablo",
+    fechaISO: "2026-03-14T21:00:00-03:00",
+    fechaLegible: "Sábado 14/03/2026 • 21:00 h • Mendoza",
+    ceremonia: { fecha: "14/03/2026 · 19:00 h", lugar: "Parroquia Nuestra Señora" },
+    fiesta:    { fecha: "14/03/2026 · 21:00 h", lugar: "Salón Torino Eventos" },
+    rsvpWhatsapp: { telefono: "549261542615007925", mensaje: "¡Hola! Quiero confirmar mi asistencia a la boda de Belén y Pablo." },
+    rsvpFormUrl: "https://forms.gle/xxxxxxxxxxxxxxxx",
+    cierreRSVP: "28/02/2026",
+    alias: "ALIAS.BODA.EJEMPLO"
+  };
 
-    const SEC = 1000, MIN = SEC*60, HR = MIN*60, DAY = HR*24;
-    function tick(){
-      const now = new Date();
-      const left = Math.max(0, DATE_TARGET - now);
-      d.textContent = Math.floor(left / DAY);
-      h.textContent = Math.floor((left % DAY) / HR);
-      m.textContent = Math.floor((left % HR) / MIN);
-      s.textContent = Math.floor((left % MIN) / SEC);
-    }
-    tick(); setInterval(tick, 1000);
+  // ===== TEXTOS =====
+  document.querySelector('.names').innerHTML = `${CONFIG.pareja.replace(' & ', ' <span class="amp">&amp;</span> ')}`;
+  document.querySelector('.namescript').textContent = CONFIG.pareja;
+  document.getElementById('fecha-hero').textContent = CONFIG.fechaLegible;
+  document.getElementById('fecha-legible').textContent = CONFIG.fechaLegible;
+  document.getElementById('ceremonia-fecha').textContent = CONFIG.ceremonia.fecha;
+  document.getElementById('ceremonia-lugar').textContent = CONFIG.ceremonia.lugar;
+  document.getElementById('fiesta-fecha').textContent   = CONFIG.fiesta.fecha;
+  document.getElementById('fiesta-lugar').textContent   = CONFIG.fiesta.lugar;
+  document.getElementById('cierre-rsvp').textContent = CONFIG.cierreRSVP;
 
-    // ========= AUDIO PLAY/PAUSE =========
-    const song = document.getElementById('song');
-    const btn  = document.getElementById('audioBtn');
-    const icon = document.getElementById('audioIcon');
-    const label= document.getElementById('audioLabel');
-    const viz  = document.getElementById('viz');
+  // ===== LINKS RSVP =====
+  const msg = encodeURIComponent(CONFIG.rsvpWhatsapp.mensaje);
+  document.getElementById('rsvp-wa').href = `https://wa.me/${CONFIG.rsvpWhatsapp.telefono}?text=${msg}`;
+  document.getElementById('rsvp-form').href = CONFIG.rsvpFormUrl;
 
-    let isPlaying = false;
-    function updateUI(){
-      icon.className = isPlaying ? 'fa-solid fa-pause' : 'fa-solid fa-play';
-      label.textContent = isPlaying ? 'Pausar música' : 'Musicalizá la invitación — Play';
-      viz.style.opacity = isPlaying ? '1' : '0';
-    }
+  // ===== COPIAR ALIAS =====
+  document.getElementById('copyAlias')?.addEventListener('click', async ()=>{
+    const el = document.getElementById('alias'); el.select(); el.setSelectionRange(0,99999);
+    try{ await navigator.clipboard.writeText(el.value); alert('Alias copiado ✔'); }
+    catch{ document.execCommand('copy'); alert('Alias copiado ✔'); }
+  });
 
-    btn.addEventListener('click', async () => {
-      try{
-        if(!isPlaying){
-          await song.play();
-          isPlaying = true;
-        } else {
-          song.pause();
-          isPlaying = false;
+  // ===== DRAWER MENÚ =====
+  const drawer = document.getElementById('drawer');
+  const openBtn = document.getElementById('openMenu');
+  const closeBtn = document.getElementById('closeMenu');
+  const links = document.querySelectorAll('.navlink');
+  function open(){ drawer.style.display='block'; drawer.setAttribute('aria-hidden','false'); }
+  function close(){ drawer.style.display='none'; drawer.setAttribute('aria-hidden','true'); }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  drawer.addEventListener('click', (e)=>{ if(e.target===drawer) close(); });
+  links.forEach(a=> a.addEventListener('click', close));
+
+  // ===== REVEAL =====
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }});
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+  // ===== STAGGER PORTADA =====
+  window.addEventListener('load', ()=>{ document.querySelector('header.hero')?.classList.add('loaded'); });
+
+  // ===== CONTADOR =====
+  const target = new Date(CONFIG.fechaISO).getTime();
+  const D=24*60*60*1000,H=60*60*1000,M=60*1000,S=1000;
+  const $d=document.getElementById('d'),$h=document.getElementById('h'),$m=document.getElementById('m'),$s=document.getElementById('s');
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    const now = Date.now(); let diff = target - now; if(diff<0) diff=0;
+    const days=Math.floor(diff/D), hours=Math.floor((diff%D)/H), mins=Math.floor((diff%H)/M), secs=Math.floor((diff%M)/S);
+    $d.textContent=days; $h.textContent=pad(hours); $m.textContent=pad(mins); $s.textContent=pad(secs);
+  }
+  tick(); setInterval(tick,1000);
+
+  // ===== TYPEWRITER =====
+  const typeTarget = document.getElementById('typeText');
+  const phrase = "Existen momentos en la vida que imaginamos, soñamos y esperamos; uno de esos momentos ha llegado.\nHoy tenemos el placer de poder compartirlo con cada uno de ustedes.";
+  let i=0; (function type(){ if(i<=phrase.length){ const ch = phrase[i] || ""; typeTarget.innerHTML += (ch === "\n") ? "<br>" : ch; i++; setTimeout(type, 24);} })();
+
+  // ===== MÚSICA: YouTube + fallback <audio> =====
+  const YT_VIDEO_ID = "rtOvBOTyX00"; // Christina Perri - A Thousand Years (Official). Cambiá por tu versión con subtítulos si querés.
+  let ytPlayer = null, ytReady = false;
+
+  // YouTube API callback
+  window.onYouTubeIframeAPIReady = function(){
+    const playerVars = {
+      autoplay: 0, controls: 0, rel: 0, modestbranding: 1, showinfo: 0, playsinline: 1
+    };
+    // Agregar origin solo si servís por http(s)
+    if(/^https?:$/.test(location.protocol)){ playerVars.origin = location.origin; }
+
+    ytPlayer = new YT.Player('yt-player', {
+      videoId: YT_VIDEO_ID,
+      playerVars,
+      events: {
+        onReady: ()=>{
+          ytReady = true;
+          ytPlayer.setVolume(65);
+          // forzar permiso autoplay en el iframe
+          try{ ytPlayer.getIframe().setAttribute('allow','autoplay'); }catch(e){}
+        },
+        onStateChange: (e)=>{
+          if(e.data === 1) setPlayingUI(true);         // playing
+          if(e.data === 2 || e.data === 0) setPlayingUI(false); // paused/ended
+        },
+        onError: (e)=>{
+          console.warn('YouTube error:', e?.data);
         }
-      }catch(e){
-        console.warn('No se pudo reproducir automáticamente:', e);
-      }finally{ updateUI(); }
+      }
     });
+  };
 
-    // Pausar cuando se oculta la pestaña (opcional)
-    document.addEventListener('visibilitychange', ()=>{
-      if(document.hidden && !song.paused){ song.pause(); isPlaying=false; updateUI(); }
-    });
+  const audio = document.getElementById('song'); audio.volume=0.85; // fallback
+  const musicBtn = document.getElementById('musicBtn');
+  const audioBtn = document.getElementById('audioBtn');
+  const audioLabel = document.getElementById('audioLabel');
+  const viz = document.getElementById('viz');
 
-    // Restablecer UI si termina la canción
-    song.addEventListener('ended', ()=>{ isPlaying=false; updateUI(); });
+  function setPlayingUI(playing){
+    musicBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    musicBtn.textContent = playing ? '⏸' : '▶';
+    if(audioBtn){ audioBtn.textContent = playing ? '⏸' : '▶'; }
+    if(audioLabel){ audioLabel.textContent = playing ? 'Pausar música' : 'Musicalizá la invitación — Play'; }
+    if(viz){ viz.style.opacity = playing ? '1' : '0'; }
+  }
+
+  async function playMusic(){
+    try{
+      if(ytReady && ytPlayer){
+        ytPlayer.playVideo();
+        setPlayingUI(true);
+      }else{
+        await audio.play();
+        setPlayingUI(true);
+      }
+    }catch(e){
+      setPlayingUI(false);
+      console.warn('No se pudo iniciar audio:', e);
+      alert('Para escuchar la música, tocá el botón ▶ después de que cargue la página.');
+    }
+  }
+
+  function pauseMusic(){
+    try{ if(ytReady && ytPlayer){ ytPlayer.pauseVideo(); } }catch(e){}
+    audio.pause();
+    setPlayingUI(false);
+  }
+
+  function toggle(){
+    try{
+      if(ytReady && ytPlayer){
+        const st = ytPlayer.getPlayerState();
+        (st !== 1) ? playMusic() : pauseMusic();
+      }else{
+        (audio.paused) ? playMusic() : pauseMusic();
+      }
+    }catch(e){
+      (audio.paused) ? playMusic() : pauseMusic();
+    }
+  }
+
+  musicBtn.addEventListener('click', toggle);
+  audioBtn?.addEventListener('click', toggle);
+
+  // Primer gesto: ayuda a iOS a habilitar audio
+  document.addEventListener('pointerdown', ()=>{ try{ audio.load(); }catch{} }, {once:true});
   </script>
+
+  <!-- Contenedor del player (lo crea la API) -->
+  <div id="yt-holder"><div id="yt-player"></div></div>
 </body>
 </html>
