@@ -157,7 +157,7 @@ const Toast = Swal.mixin({
             <div><strong>Cancelación:</strong> <a class="link" href="${cancelUrl}" target="_blank" rel="noopener">clic aquí</a></div>
             ${aliasBlock}
           </div>
-          <p class="small mt-2 text-muted mb-0">Te enviaremos recordatorio automático <strong>2 horas antes</strong>.</p>
+          <p class="small mt-2 text-muted mb-0">Muchas Gracias por elegirnos!! <strong> Te esperamos!</strong>.</p>
         `,
         confirmButtonText:'Guardar y salir',
         confirmButtonColor:'#ec4899'

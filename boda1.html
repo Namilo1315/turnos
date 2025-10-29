@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Belén & Pablo — Nuestra Boda</title>
+  <meta name="description" content="Invitación móvil, negro + dorado, portada estilo Belén con foto real, cuenta regresiva, menú hamburguesa, música, confirmar y regalos." />
+
+  <!-- Fuentes elegantes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <meta name="theme-color" content="#0a0a0a" />
+  <style>
+    :root{
+      --bg:#0a0a0a; --card:#0e0e0e; --ink:#f5f5f5; --muted:#b8b8b8;
+      --gold:#d4af37; --gold-2:#b89024; --line:#1b1b1b; --ring:0 18px 46px rgba(0,0,0,.6);
+      --w:min(100%,480px);
+      --topbar:58px; /* alto barra fija */
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      background:
+        radial-gradient(1200px 600px at 50% -10%, #141414 0%, transparent 60%),
+        linear-gradient(180deg,#0a0a0a,#0a0a0a);
+      color:var(--ink);
+      font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif
+    }
+    /* Motivo dorado decorativo */
+    body:before, body:after{
+      content:""; position:fixed; z-index:-1; width:340px; height:340px; opacity:.22; pointer-events:none;
+      background:url(https://static.vecteezy.com/system/resources/previews/001/343/598/non_2x/golden-flower-on-black-background-gold-leaf-free-vector.jpg) center/cover no-repeat;
+      filter:saturate(1.1) contrast(1.05); mix-blend-mode:screen;
+    }
+    body:before{top:-80px; right:-60px; transform:rotate(-8deg)}
+    body:after{bottom:-100px; left:-80px; transform:rotate(12deg)}
+
+    a{color:var(--ink);text-decoration:none}
+    img{max-width:100%;display:block}
+    .wrap{max-width:var(--w);margin:0 auto;padding:12px}
+
+    /* ===== Topbar & Menú ===== */
+    .topbar{
+      position:sticky;top:0;z-index:40;display:flex;align-items:center;justify-content:space-between;gap:8px;
+      height:var(--topbar);
+      padding:10px 12px;background:rgba(10,10,10,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)
+    }
+    .brand{display:flex;align-items:center;gap:8px}
+    .brand .namescript{
+      font-family:"Great Vibes", cursive; font-weight:400; font-size:26px; line-height:1; letter-spacing:.02em;
+      background:linear-gradient(180deg,#fff7d1,var(--gold),#e7ae1f);
+      -webkit-background-clip:text;background-clip:text;color:transparent; text-shadow:0 1px 0 rgba(255,255,255,.18);
+    }
+    .hamb,.music{
+      width:42px;height:42px;display:grid;place-items:center;border-radius:12px;border:1px solid #2a2a2a;background:#111;cursor:pointer
+    }
+    .hamb span{width:18px;height:2px;background:#eee;position:relative;display:block}
+    .hamb span:before,.hamb span:after{content:"";position:absolute;left:0;width:18px;height:2px;background:#eee}
+    .hamb span:before{top:-6px}.hamb span:after{top:6px}
+    .music{font-size:18px;color:#fff}
+    .music[aria-pressed="true"]{border-color:#ffd577; box-shadow:0 0 0 2px rgba(212,175,55,.25) inset}
+
+    nav.drawer{position:fixed;inset:0;display:none;background:rgba(0,0,0,.72);z-index:45}
+    .panel{
+      position:absolute;right:0;top:0;height:100%;width:min(80%,300px); /* más angosto */
+      background:#0f0f0f;border-left:1px solid var(--line); box-shadow:var(--ring);display:flex;flex-direction:column
+    }
+    .panel header{display:flex;align-items:center;justify-content:space-between;padding:12px;border-bottom:1px solid var(--line)}
+    .panel h3{margin:0;font-weight:800;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .panel a{padding:12px 14px;border-bottom:1px solid #151515;font-weight:600;color:var(--ink);font-size:15px}
+    .panel a:hover{background:#131313}
+
+    /* ===== HERO estilo Belén ===== */
+    header.hero{
+      position:relative;overflow:hidden;border-radius:22px;margin:12px auto;background:#0b1220;border:1px solid var(--line);box-shadow:var(--ring);
+      min-height:72vh; scroll-margin-top:calc(var(--topbar) + 12px);
+    }
+    .hero-media{position:relative;min-height:72vh;display:grid;place-items:center}
+    .hero-media .bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:contrast(1.05) saturate(1.05) brightness(1.3)}
+    .veil{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.35))}
+    .hero-inner{position:relative;z-index:1;text-align:center;padding:32px 20px;max-width:960px;margin:auto; padding-top:18vh;} /* baja portada */
+    .kicker{letter-spacing:.55em;text-transform:uppercase;font-weight:700;color:#e2e8f0;font-size:.95rem;opacity:.95 ; margin-top: 40px;}
+    .names{
+      font-family:"Great Vibes", cursive; font-weight:400; font-size:clamp(48px,12vw,84px);
+      line-height:1.0; margin:18px 12px 6px; /* ↑ más margen arriba */
+      background:linear-gradient(180deg,#d4af37,var(--gold),#000000); -webkit-background-clip:text; background-clip:text;
+      text-shadow:0 2px 0 #d4af37
+    }
+    .names .amp{color:#fbbf24}
+    .date{font-size:1.05rem;color:#e2e8f0}
+
+    /* Botón audio + visualizador */
+    .audio-wrap{margin-top:18px;display:flex;justify-content:center;gap:10px;align-items:center}
+    .audio-btn{
+      appearance:none;border:0;outline:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;
+      width:64px;height:64px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter: blur(3px);
+      box-shadow:0 6px 16px rgba(0,0,0,.35);transition:transform .15s ease, background .2s ease; color:#fff; font-size:22px; font-weight:800
+    }
+    .audio-btn:hover{transform:translateY(-2px);background:rgba(255,255,255,.18)}
+    .audio-label{font-weight:600;color:#f8fafc;opacity:.95}
+    .viz{display:inline-block;width:44px;height:18px;position:relative;transition:opacity .25s ease}
+    .bar{position:absolute;bottom:0;width:4px;background:#fff;left:0;height:20%;animation:vu 1s infinite ease-in-out}
+    .bar:nth-child(2){left:8px;animation-delay:.1s}
+    .bar:nth-child(3){left:16px;animation-delay:.2s}
+    .bar:nth-child(4){left:24px;animation-delay:.3s}
+    .bar:nth-child(5){left:32px;animation-delay:.4s}
+    @keyframes vu{0%,100%{height:20%}50%{height:100%}}
+
+    /* ===== Bloques ===== */
+    section.block{
+      margin-top:14px;background:linear-gradient(180deg,#0e0e0e,#0c0c0c);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--ring);
+      scroll-margin-top:calc(var(--topbar) + 12px);
+    }
+    h2{font-family:"Cormorant Garamond",serif;font-weight:700;font-size:22px;margin:2px 0 8px;color:var(--ink);letter-spacing:.02em;text-align:center}
+    .lead{margin:0 0 10px;color:var(--muted);text-align:center}
+    .muted{color:var(--muted);text-align:center}
+
+    /* ===== Cuenta regresiva ===== */
+    .count{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;justify-items:center}
+    .tile{display:grid;place-items:center;background:#111;border:1px solid #2a2a2a;border-radius:14px;padding:12px;min-width:68px}
+    .num{font-size:28px;font-weight:800;letter-spacing:.04em;background:linear-gradient(180deg,#fff7d1,var(--gold),#ffe7a8); -webkit-background-clip:text; color:transparent}
+    .lbl{font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+
+    /* ===== Lista ===== */
+    .list{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+    .row{display:grid;grid-template-columns:28px 1fr;align-items:center;gap:10px;padding:10px;border:1px solid #1d1d1d;border-radius:14px;background:#101010}
+    .row i{display:grid;place-items:center;font-style:normal;font-size:18px;opacity:.9}
+    .row div{line-height:1.35}
+    .row strong{font-weight:700}
+
+    /* ===== Botones ===== */
+    .actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:11px 16px;border-radius:14px;border:1px solid var(--gold-2);background:linear-gradient(180deg,#1a1a1a,#121212);color:var(--ink);font-weight:700;cursor:pointer;box-shadow:0 10px 28px rgba(0,0,0,.45); text-align:center}
+    .btn.primary{background:linear-gradient(180deg,var(--gold),#c79b2e);color:#111;border-color:#ffe7a8;text-shadow:0 1px 0 rgba(255,255,255,.2)}
+
+    footer{padding:28px 0 36px;color:var(--muted);text-align:center}
+
+    /* ===== Reveal & Stagger ===== */
+    .reveal{opacity:0;transform:translateY(14px)}
+    .reveal.show{opacity:1;transform:none;transition:opacity .65s ease, transform .65s ease}
+
+    .hero .kicker, .hero .names, .hero .date, .hero .audio-wrap{opacity:0; transform:translateY(10px)}
+    .hero.loaded .kicker{animation:fadeUp .6s ease .05s forwards}
+    .hero.loaded .names{animation:fadeUp .65s ease .2s forwards}
+    .hero.loaded .date{animation:fadeUp .65s ease .38s forwards}
+    .hero.loaded .audio-wrap{animation:fadeUp .7s ease .55s forwards}
+    @keyframes fadeUp{to{opacity:1; transform:none}}
+
+    @media (prefers-reduced-motion: reduce){
+      .reveal, .hero .kicker, .hero .names, .hero .date, .hero .audio-wrap{opacity:1 !important; transform:none !important; animation:none !important}
+      html{scroll-behavior:auto}
+    }
+
+    /* ===== Typewriter & embellecido “Existen…” ===== */
+    .typewriter{
+      margin:22px auto 0; max-width:92%; text-align:center; line-height:1.7;
+      font-family:"Cormorant Garamond",serif; font-style:italic; font-size:clamp(16px,4.2vw,20px);
+      color:#f1f1f1; letter-spacing:.3px; position:relative;
+    }
+    .typewriter::before, .typewriter::after{
+      content:""; display:block; width:160px; height:1px; margin:10px auto;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:.9;
+    }
+    .typewriter span{
+      border-right:2px solid rgba(212,175,55,.7); padding-right:3px; animation:caret .9s steps(1) infinite; text-shadow:0 1px 0 rgba(0,0,0,.2);
+    }
+    @keyframes caret{50%{border-color:transparent}}
+
+    #gracias p:first-of-type{
+      font-family:"Cormorant Garamond",serif; font-style:italic; font-size:1.05rem; color:#f1f1f1;
+      position:relative; padding-top:12px; margin-top:10px;
+    }
+    #gracias p:first-of-type::before{
+      content:""; display:block; width:160px; height:1px; margin:0 auto 10px;
+      background:linear-gradient(90deg,transparent,var(--gold),transparent);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <!-- ===== Topbar ===== -->
+    <div class="topbar">
+      <div class="brand"><span class="namescript">Belén & Pablo</span></div>
+      <div style="display:flex;gap:8px">
+        <button class="music" id="musicBtn" aria-label="Música" aria-pressed="false" title="Reproducir/Pausar música">▶</button>
+        <button class="hamb" id="openMenu" aria-label="Abrir menú"><span></span></button>
+      </div>
+    </div>
+
+    <!-- ===== Drawer ===== -->
+    <nav class="drawer" id="drawer" aria-hidden="true">
+      <div class="panel">
+        <header>
+          <h3>Menú</h3>
+          <button class="hamb" id="closeMenu" aria-label="Cerrar menú"><span></span></button>
+        </header>
+        <a href="#inicio" class="navlink">Inicio</a>
+        <a href="#confirmar" class="navlink">Confirmar</a>
+        <a href="#regalo" class="navlink">Regalo</a>
+        <a href="#tarjetas" class="navlink">Tarjetas</a>
+        <a href="#gracias" class="navlink">Gracias</a>
+      </div>
+    </nav>
+
+    <!-- ===== HERO (con imagen belen.jpeg) ===== -->
+    <header id="inicio" class="hero">
+      <div class="hero-media">
+        <img class="bg" src="belu.jpeg" onerror="this.onerror=null;this.src='belu.jpg'" alt="Belén y Pablo — foto de novios">
+        <div class="veil"></div>
+        <div class="hero-inner">
+          <div class="kicker">¡Estás invitado!</div>
+          <h1 class="names">Belén <span class="amp">&amp;</span> Pablo</h1>
+          <div class="date" id="fecha-hero">Sábado 14/03/2026 • 21:00 h • Mendoza</div>
+          <div class="audio-wrap">
+            <button class="audio-btn" id="audioBtn" aria-label="Reproducir música">▶</button>
+            <span class="audio-label" id="audioLabel">Musicalizá la invitación — Play</span>
+            <span class="viz" id="viz" aria-hidden="true" style="opacity:0">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ===== Cuenta regresiva ===== -->
+    <section class="block reveal" style="animation-delay:.05s">
+      <h2>Cuenta regresiva</h2>
+      <p class="lead">Comienza la cuenta regresiva para nuestro gran día…</p>
+      <div class="date" id="fecha-legible" style="display:inline-block;margin:0 auto 10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);padding:6px 12px;border-radius:999px;font-weight:700"></div>
+      <div class="count" id="countdown" style="margin-top:8px">
+        <div class="tile"><div class="num" id="d">0</div><div class="lbl">días</div></div>
+        <div class="tile"><div class="num" id="h">0</div><div class="lbl">horas</div></div>
+        <div class="tile"><div class="num" id="m">0</div><div class="lbl">min</div></div>
+        <div class="tile"><div class="num" id="s">0</div><div class="lbl">seg</div></div>
+      </div>
+      <div class="typewriter"><span id="typeText"></span></div>
+    </section>
+
+    <!-- ===== Confirmar ===== -->
+    <section id="confirmar" class="block reveal">
+      <h2>Confirmar asistencia</h2>
+      <ul class="list">
+        <li class="row"><i>📍</i><div><strong>Recepción</strong><br><span id="fiesta-lugar">Salón Torino Eventos</span> — <span id="fiesta-fecha">14/03/2026 · 21:00 h</span></div></li>
+        <li class="row"><i>⛪</i><div><strong>Ceremonia</strong><br><span id="ceremonia-lugar">Parroquia Nuestra Señora</span> — <span id="ceremonia-fecha">14/03/2026 · 19:00 h</span></div></li>
+        <li class="row"><i>👗</i><div><strong>Dress code</strong><br>Elegante (blanco total reservado para la novia)</div></li>
+      </ul>
+      <div class="actions" style="margin-top:10px">
+        <a class="btn primary" id="rsvp-wa" target="_blank">WhatsApp RSVP</a>
+        <a class="btn" id="rsvp-form" target="_blank">Formulario</a>
+      </div>
+      <p class="muted" style="margin-top:8px">Confirmar antes del <strong id="cierre-rsvp">28/02/2026</strong>.</p>
+    </section>
+
+    <!-- ===== Regalo ===== -->
+    <section id="regalo" class="block reveal">
+      <h2>Regalo</h2>
+      <p class="muted">Tu presencia es nuestro mejor regalo. Si deseás hacernos un obsequio, podés hacerlo por transferencia.</p>
+      <div class="actions" style="gap:8px;flex-wrap:wrap">
+        <input id="alias" value="ALIAS.BODA.EJEMPLO" readonly style="width:260px;padding:10px 12px;border-radius:12px;border:1px solid #242424;background:#101010;color:var(--ink);text-align:center">
+        <button class="btn primary" id="copyAlias" type="button">Copiar alias</button>
+      </div>
+    </section>
+
+    <!-- ===== Tarjetas ===== -->
+    <section id="tarjetas" class="block reveal">
+      <h2>Tarjetas</h2>
+      <ul class="list">
+        <li class="row"><i>🧑</i><div><strong>Adultos</strong><br><span id="precio-adultos">$60.000</span></div></li>
+        <li class="row"><i>🧒</i><div><strong>Menores (hasta 10 años)</strong><br><span id="precio-menores">$30.000</span></div></li>
+      </ul>
+      <p class="muted" style="margin-top:8px">Para adquirirlas, comunicarse con la familia.</p>
+    </section>
+
+    <!-- ===== Gracias ===== -->
+    <section id="gracias" class="block reveal">
+      <h2> Muchas Gracias</h2>
+      <p style="margin:0 0 8px; text-align:center">Existen momentos en la vida que imaginamos, soñamos y esperamos; uno de esos momentos ha llegado.</p>
+      <p style="margin:0 0 8px; text-align:center">Nuestro camino empezó hace <strong>15 años</strong> y hoy queremos celebrarlo con ustedes, reafirmando nuestro amor.</p>
+      <p style="margin:0 0 0; text-align:center">Tenemos el placer de poder compartirlo con cada uno de ustedes. Gracias por acompañarnos. ♥</p>
+    </section>
+
+    <footer>
+      <div style="opacity:.8">Belén & Pablo — 2026</div>
+    </footer>
+  </div>
+
+  <!-- ===== Audio ===== -->
+  <audio id="song" preload="auto" loop crossorigin="anonymous">
+    <source src="https://static.wixstatic.com/mp3/81e114_37f9211a1bf348e7a371540ba2a14621.mp3" type="audio/mpeg">
+    <!-- Fallback local: <source src="musica.mp3" type="audio/mpeg"> -->
+  </audio>
+
+  <script>
+  // ===== CONFIG =====
+  const CONFIG = {
+    pareja: "Belén & Pablo",
+    fechaISO: "2026-03-14T21:00:00-03:00",
+    fechaLegible: "Sábado 14/03/2026 • 21:00 h • Mendoza",
+    ceremonia: { fecha: "14/03/2026 · 19:00 h", lugar: "Parroquia Nuestra Señora" },
+    fiesta:    { fecha: "14/03/2026 · 21:00 h", lugar: "Salón Torino Eventos" },
+    rsvpWhatsapp: { telefono: "549261542615007925", mensaje: "¡Hola! Quiero confirmar mi asistencia a la boda de Belén y Pablo." },
+    rsvpFormUrl: "https://forms.gle/xxxxxxxxxxxxxxxx",
+    cierreRSVP: "28/02/2026",
+    alias: "ALIAS.BODA.EJEMPLO"
+  };
+
+  // Textos
+  document.querySelector('.names').innerHTML = `${CONFIG.pareja.replace(' & ', ' <span class="amp">&amp;</span> ')}`;
+  document.querySelector('.namescript').textContent = CONFIG.pareja;
+  document.getElementById('fecha-hero').textContent = CONFIG.fechaLegible;
+  document.getElementById('fecha-legible').textContent = CONFIG.fechaLegible;
+  document.getElementById('ceremonia-fecha').textContent = CONFIG.ceremonia.fecha;
+  document.getElementById('ceremonia-lugar').textContent = CONFIG.ceremonia.lugar;
+  document.getElementById('fiesta-fecha').textContent   = CONFIG.fiesta.fecha;
+  document.getElementById('fiesta-lugar').textContent   = CONFIG.fiesta.lugar;
+  document.getElementById('cierre-rsvp').textContent = CONFIG.cierreRSVP;
+
+  // Links RSVP
+  const msg = encodeURIComponent(CONFIG.rsvpWhatsapp.mensaje);
+  document.getElementById('rsvp-wa').href = `https://wa.me/${CONFIG.rsvpWhatsapp.telefono}?text=${msg}`;
+  document.getElementById('rsvp-form').href = CONFIG.rsvpFormUrl;
+
+  // Copiar alias
+  document.getElementById('copyAlias')?.addEventListener('click', async ()=>{
+    const el = document.getElementById('alias'); el.select(); el.setSelectionRange(0,99999);
+    try{ await navigator.clipboard.writeText(el.value); alert('Alias copiado ✔'); }
+    catch{ document.execCommand('copy'); alert('Alias copiado ✔'); }
+  });
+
+  // Drawer menú
+  const drawer = document.getElementById('drawer');
+  const openBtn = document.getElementById('openMenu');
+  const closeBtn = document.getElementById('closeMenu');
+  const links = document.querySelectorAll('.navlink');
+  function open(){ drawer.style.display='block'; drawer.setAttribute('aria-hidden','false'); }
+  function close(){ drawer.style.display='none'; drawer.setAttribute('aria-hidden','true'); }
+  openBtn.addEventListener('click', open);
+  closeBtn.addEventListener('click', close);
+  drawer.addEventListener('click', (e)=>{ if(e.target===drawer) close(); });
+  links.forEach(a=> a.addEventListener('click', close));
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=> io.observe(el));
+
+  // Stagger portada
+  window.addEventListener('load', ()=>{
+    document.querySelector('header.hero')?.classList.add('loaded');
+  });
+
+  // Cuenta regresiva
+  const target = new Date(CONFIG.fechaISO).getTime();
+  const D=24*60*60*1000,H=60*60*1000,M=60*1000,S=1000;
+  const $d=document.getElementById('d'),$h=document.getElementById('h'),$m=document.getElementById('m'),$s=document.getElementById('s');
+  function pad(n){return String(n).padStart(2,'0')}
+  function tick(){
+    const now = Date.now(); let diff = target - now; if(diff<0) diff=0;
+    const days=Math.floor(diff/D), hours=Math.floor((diff%D)/H), mins=Math.floor((diff%H)/M), secs=Math.floor((diff%M)/S);
+    $d.textContent=days; $h.textContent=pad(hours); $m.textContent=pad(mins); $s.textContent=pad(secs);
+  }
+  tick(); setInterval(tick,1000);
+
+  // Typewriter
+  const typeTarget = document.getElementById('typeText');
+  const phrase = "Existen momentos en la vida que imaginamos, soñamos y esperamos; uno de esos momentos ha llegado.\nHoy tenemos el placer de poder compartirlo con cada uno de ustedes.";
+  let i=0; function type(){ if(i<=phrase.length){ const ch = phrase[i] || ""; typeTarget.innerHTML += (ch === "\n") ? "<br>" : ch; i++; setTimeout(type, 24);} }
+  type();
+
+  // Música (topbar y portada sincronizados)
+  const audio = document.getElementById('song'); audio.volume=0.85;
+  const musicBtn = document.getElementById('musicBtn');
+  const audioBtn = document.getElementById('audioBtn');
+  const audioLabel = document.getElementById('audioLabel');
+  const viz = document.getElementById('viz');
+
+  function setPlayingUI(playing){
+    musicBtn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+    musicBtn.textContent = playing ? '⏸' : '▶';
+    audioBtn.textContent = playing ? '⏸' : '▶';
+    audioLabel.textContent = playing ? 'Pausar música' : 'Musicalizá la invitación — Play';
+    viz.style.opacity = playing ? '1' : '0';
+  }
+  async function playMusic(){
+    try{ await audio.play(); setPlayingUI(true); }
+    catch(e){ setPlayingUI(false); console.warn('Reproducción bloqueada o archivo no disponible:', e); }
+  }
+  function pauseMusic(){ audio.pause(); setPlayingUI(false); }
+  function toggle(){ audio.paused ? playMusic() : pauseMusic(); }
+  musicBtn.addEventListener('click', toggle);
+  audioBtn.addEventListener('click', toggle);
+
+  // Primer gesto del usuario: preparar audio y (si permite) reproducir
+  const prime = ()=>{ audio.load(); /* prepara el buffer */ };
+  document.addEventListener('pointerdown', prime, {once:true});
+
+  // Guardar preferencia simple
+  const pref = localStorage.getItem('music');
+  if(pref==='on'){ /* el usuario tocará ▶ para reproducir */ }
+  audio.addEventListener('play', ()=> localStorage.setItem('music','on'));
+  audio.addEventListener('pause', ()=> localStorage.setItem('music','off'));
+
+  // Mensaje si falla la carga del MP3 remoto
+  audio.addEventListener('error', ()=>{
+    alert('No se pudo cargar la canción. Verificá la URL o usá un archivo local ./musica.mp3');
+  });
+  </script>
+</body>
+</html>
