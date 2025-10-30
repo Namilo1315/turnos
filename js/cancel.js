@@ -4,11 +4,18 @@
   const status  = $('#status');
   const details = $('#details');
   const after   = $('#after');
+  const helper  = $('#helper');
 
   const params = new URLSearchParams(location.search);
   const id    = params.get('id');
   const token = params.get('token');
 
+  function fmtDate(iso){
+    try{
+      const [y,m,d] = iso.split('-').map(Number);
+      return new Date(y, m-1, d).toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'});
+    }catch{ return iso; }
+  }
   function showAlert(type, html) {
     status.innerHTML = `<div class="alert alert-${type}" role="alert">${html}</div>`;
   }
@@ -18,26 +25,36 @@
     return;
   }
 
+  // Venís desde el link con id+token, ocultamos el helper (si existe)
+  if(helper) helper.classList.add('d-none');
+
   (async () => {
     try {
       showAlert('info', 'Procesando cancelación…');
 
-      const bookings = await DB.listBookings();
-      const b = bookings.find(x => String(x.id) === String(id));
+      // Intentamos leer puntual por ID (si tu DB.js lo implementa), si no, buscamos en la lista
+      let booking = null;
+      if (typeof DB.getBooking === 'function') {
+        booking = await DB.getBooking(id);
+      } else {
+        const all = await DB.listBookings();
+        booking = all.find(x => String(x.id) === String(id));
+      }
 
-      if (!b) { showAlert('danger', 'No encontramos ese turno.'); return; }
-      if (b.cancelToken !== token) { showAlert('danger', 'Token inválido.'); return; }
+      if (!booking) { showAlert('danger', 'No encontramos ese turno.'); return; }
+      if (booking.cancelToken !== token) { showAlert('danger', 'Token inválido.'); return; }
 
-      if (b.status === 'cancelado') {
+      if (booking.status === 'cancelado') {
         showAlert('info', 'Este turno ya estaba cancelado.');
       } else {
-        await DB.updateBooking(b.id, { status: 'cancelado' });
-        showAlert('success', 'Listo, tu turno fue cancelado.');
+        await DB.updateBooking(booking.id, { status: 'cancelado' });
+        showAlert('success', '¡Listo, tu turno fue cancelado!');
+        booking.status = 'cancelado';
       }
 
       details.innerHTML = `
         <div class="small text-muted">
-          <strong>${b.name}</strong> — ${b.date} ${b.time}
+          <strong>${booking.name}</strong> — ${fmtDate(booking.date)} ${booking.time} hs
         </div>
       `;
       after.classList.remove('d-none');
@@ -47,4 +64,3 @@
     }
   })();
 })();
-

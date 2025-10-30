@@ -1,3 +1,4 @@
+
 // ===== ADMIN (Panel) — compatible con Firestore (DB.*) =====
 
 /* Helpers */
@@ -21,6 +22,59 @@ const lastDayOfMonth = (ym)=>{
   const d = new Date(y, m, 0);
   return d.toISOString().slice(0,10);
 };
+
+/* ===== Helpers nuevos (WA + disponibilidad + cancel URL) ===== */
+function safePhoneAR(raw){
+  let p = String(raw || '').replace(/\D/g,'');
+  if(!p.startsWith('54')) p = '54' + p;
+  return p;
+}
+function minutes(hhmm){
+  const [h,m] = String(hhmm||'00:00').split(':').map(Number);
+  return h*60 + m;
+}
+function overlap(aStart, aDur, bStart, bDur){
+  return aStart < bStart + bDur && bStart < aStart + aDur;
+}
+function buildCancelUrl(b){
+  const base = location.origin + location.pathname.replace('admin.html','cancel.html');
+  return `${base}?id=${encodeURIComponent(b.id)}&token=${encodeURIComponent(b.cancelToken||'')}`;
+}
+function buildWhatsAppLink(b, svcName){
+  const brand = (typeof SETTINGS?.brand === 'string' && SETTINGS.brand.trim()) ? SETTINGS.brand : 'Estética Bellezza';
+  const cancelUrl = b.cancelToken ? buildCancelUrl(b)
+                                  : (location.origin + location.pathname.replace('admin.html','index.html'));
+  const text = [
+    `Hola ${b.name}! Te escribimos de ${brand}.`,
+    `Tu turno: ${svcName} — ${fmtFullDate(b.date)} ${b.time} hs.`,
+    `• Para *confirmar*: respondé "SI".`,
+    `• Para *cancelar*: ${cancelUrl}`
+  ].join('\n');
+  return `https://wa.me/${safePhoneAR(b.phone)}?text=${encodeURIComponent(text)}`;
+}
+async function isTimeFree(date, time, svcId){
+  const svc = SERVICES.find(s=>s.id===svcId);
+  const dur = parseInt(svc?.duration || 30, 10);
+  const start = minutes(time);
+  const sameDay = BOOKINGS.filter(b=> b.date===date && b.status!=='cancelado');
+  for(const b of sameDay){
+    const s2 = SERVICES.find(s=>s.id===b.serviceId);
+    const dur2 = parseInt(s2?.duration || 30, 10);
+    if(overlap(start, dur, minutes(b.time), dur2)) return false;
+  }
+  return true;
+}
+async function ensureCancelTokens(){
+  let touched = 0;
+  for(const b of BOOKINGS){
+    if(!b.cancelToken){
+      const newToken = Math.random().toString(36).slice(2,10) + Math.random().toString(36).slice(2,10);
+      await updateBookingSafe(b.id, { cancelToken: newToken });
+      touched++;
+    }
+  }
+  if(touched>0){ await loadAllData(); }
+}
 
 /* DOM refs */
 const loginBox = $('#loginBox');
@@ -80,6 +134,7 @@ async function showApp(){
   loginBox.classList.add('d-none');
   appBox.classList.remove('d-none');
   await loadAllData();
+  await ensureCancelTokens();   // completa tokens que falten
   await renderAll();
 }
 
@@ -157,15 +212,17 @@ function renderAgenda(){
     const stateBadge = b.status==='cancelado'
       ? '<span class="badge bg-light text-danger">Cancelado</span>'
       : '<span class="badge bg-light text-success">Confirmado</span>';
-    const raw = String(b.phone||'').replace(/\D/g,'');
-    const waNum = raw.startsWith('54') ? raw : ('54' + raw); // evita 54 duplicado
-    const tel = raw ? `https://wa.me/${waNum}` : '#';
+
+    const wa = (b.phone && svc)
+      ? buildWhatsAppLink(b, svc.name || '-')
+      : '#';
+
     return `<tr data-id="${b.id}">
       <td>${fmtFullDate(b.date)}</td>
       <td>${b.time}</td>
       <td>${svc?.name || '-'}</td>
       <td>${b.name || '-'}</td>
-      <td><a href="${tel}" target="_blank">${b.phone || '-'}</a></td>
+      <td><a href="${wa}" target="_blank" rel="noopener">${b.phone || '-'}</a></td>
       <td>${stateBadge}</td>
       <td class="text-end">
         <div class="btn-group btn-group-sm" role="group">
@@ -175,6 +232,13 @@ function renderAgenda(){
       </td>
     </tr>`;
   }).join('');
+
+  // Scroll en tabla (visible ~10 filas)
+  const wrap = agendaTable.closest('.table-responsive');
+  if(wrap){
+    wrap.style.maxHeight = '420px';  // ~10 filas
+    wrap.style.overflowY = 'auto';
+  }
 
   agendaTable.querySelectorAll('button[data-act]').forEach(btn=>{
     btn.addEventListener('click', async ()=>{
@@ -257,7 +321,7 @@ function renderConfig(){
   c_open.value = SETTINGS.open || '09:00';
   c_close.value= SETTINGS.close|| '18:00';
   c_slot.value = SETTINGS.slot || 30;
-  c_wa.value   = SETTINGS.wa || '549261333444';
+  c_wa.value   = SETTINGS.wa || '5492616246767';
   c_pay.value  = SETTINGS.pay_alias || SETTINGS.pay || '';
 }
 async function saveSettings(obj){
@@ -648,7 +712,7 @@ pinInp?.addEventListener('keydown', e=>{ if(e.key==='Enter') inBtn.click(); });
 // Logout
 logoutBtn?.addEventListener('click', ()=>{ setAuthed(false); showLogin(); });
 
-// Crear nuevo turno (con manejo de slot ocupado en Firestore)
+// Crear nuevo turno (con manejo de solapamiento y SLOT_TAKEN DB)
 a_add?.addEventListener('click', async ()=>{
   const svc = SERVICES.find(s=>s.id===a_svc.value);
   const date=a_date.value, time=a_time.value, name=a_name.value.trim(), phone=(a_phone.value||'').replace(/\D/g,''), notes=a_notes.value.trim();
@@ -656,7 +720,21 @@ a_add?.addEventListener('click', async ()=>{
     Swal.fire({icon:'warning', title:'Completá servicio, fecha, hora, cliente y WhatsApp', confirmButtonColor:'#ec4899'});
     return;
   }
-  const booking = { id:'bk_'+Math.random().toString(36).slice(2,8), date, time, serviceId: svc.id, name, phone, notes, status:'confirmado', createdAt: Date.now(), cancelToken: Math.random().toString(36).slice(2,10), reminders:{h2:false} };
+
+  // Chequeo de solapamiento en cliente (además del control en DB si lo tenés)
+  const free = await isTimeFree(date, time, svc.id);
+  if(!free){
+    Swal.fire({icon:'warning', title:'Horario no disponible', text:'Ese horario se superpone con otro turno.'});
+    return;
+  }
+
+  const booking = {
+    id:'bk_'+Math.random().toString(36).slice(2,8),
+    date, time, serviceId: svc.id, name, phone, notes,
+    status:'confirmado', createdAt: Date.now(),
+    cancelToken: Math.random().toString(36).slice(2,10),
+    reminders:{h2:false}
+  };
   try{
     if(typeof DB.addBooking === 'function') await DB.addBooking(booking);
     else if(typeof DB.createBooking === 'function') await DB.createBooking(booking);
